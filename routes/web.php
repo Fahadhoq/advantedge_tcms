@@ -6,6 +6,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserTypeController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ClassController;
 
 /*
 |--------------------------------------------------------------------------
@@ -75,6 +76,16 @@ Route::middleware(['auth:sanctum', 'verified'])->namespace('Admin')->group(funct
     Route::post('/user-phone-number-availability-{phone}', [UserController::class, 'phone_number_availability']);
     Route::post('/email-availability-{email}', [UserController::class, 'email_availability']);
     Route::post('/create-at-date-filter', [UserController::class, 'create_at_date_filter']);
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/class', [ClassController::class, 'index'])->name('class.index');
+    Route::get('/class-create', [ClassController::class, 'create'])->name('class.create');
+    Route::post('/class-create', [ClassController::class, 'store']);
+    Route::post('/class-show-{id}', [ClassController::class, 'show'])->name('class.view');
+    Route::post('/class-delete-{id}', [ClassController::class, 'delete'])->name('class.delete');
+    Route::post('/class-edit-{id}', [ClassController::class, 'edit'])->name('class.edit');
+    Route::post('/class-update-{id}', [ClassController::class, 'update']);
 });
 
 // Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {

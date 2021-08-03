@@ -85,7 +85,6 @@
                                                         <!-- <a href="{{ route('permission.edit' , $Permission->id) }}" class="btn btn-warning btn-sm" title="Edit Role"><i class="fa fa-edit"></i></a> -->
                                                         <!-- jquery edit -->  
                                                         <a  name="edit" value="Edit" id="{{$Permission->id}}" class="btn btn-warning btn-sm edit_data" title="Edit Role"><i class="fa fa-edit"></i></a>
-                                    
                                                         <!-- jquery edit end -->
                                                         
                                                         <!-- <a href="{{ route('permission.delete' , $Permission->id) }}" class="btn btn-danger btn-sm" title="delete Role" onclick="return confirm('Are you sure to delete?')"><i class="fa fa-trash"></i></a> -->

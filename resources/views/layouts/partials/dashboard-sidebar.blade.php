@@ -44,6 +44,16 @@
                             </ul>
                         </li>
                         <!-- User Type end -->
+
+                         <!-- Class start-->
+                         <li>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-mail-open"></i><span> Class <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
+                            <ul class="submenu">
+                                <li><a href="{{ route('class.index') }}"> {{ __('Show All Class') }}</a></li>
+                                <li><a href="{{ route('class.create') }}"> {{ __('Create Class ') }}</a></li>
+                            </ul>
+                        </li>
+                        <!-- Class end -->
                        
                         @endrole
 
