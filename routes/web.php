@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UserTypeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\SubjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +87,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/class-delete-{id}', [ClassController::class, 'delete'])->name('class.delete');
     Route::post('/class-edit-{id}', [ClassController::class, 'edit'])->name('class.edit');
     Route::post('/class-update-{id}', [ClassController::class, 'update']);
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/subject', [SubjectController::class, 'index'])->name('subject.index');
+    Route::get('/subject-create', [SubjectController::class, 'create'])->name('subject.create');
+    Route::post('/subject-create', [SubjectController::class, 'store']);
+    Route::post('/subject-show-{id}', [SubjectController::class, 'show'])->name('subject.view');
+    Route::post('/subject-delete-{id}', [SubjectController::class, 'delete'])->name('subject.delete');
+    Route::post('/subject-edit-{id}', [SubjectController::class, 'edit'])->name('subject.edit');
+    Route::post('/subject-update-{id}', [SubjectController::class, 'update']);
 });
 
 // Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {

@@ -3,29 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Classes;
+use App\Models\Subject;
 use Validator;
 
-class ClassController extends Controller
+class SubjectController extends Controller
 {
     public function index(){
        
-        $data['Classes'] = Classes::select('id' ,'name')->get();
+        $data['subjects'] = Subject::select('id' ,'name')->get();
        
-        return view('Backend.Class.index' , $data );
+        return view('Backend.Subject.index' , $data );
     }
 
     public function create(){
-        return view('Backend.Class.create');
+        return view('Backend.Subject.create');
     }
 
     public function store(Request $request){
         
         $validator = Validator::make($request->all(), [
-            'ClassName' => [
+            'SubjectName' => [
                 'required',
                 'regex:/^[A-Za-z0-9 ]+$/',
-                'unique:classes,name',
+                'unique:subjects,name',
             ] 
         ]);
 
@@ -35,13 +35,13 @@ class ClassController extends Controller
 
         try{
 
-            $Classes = Classes::create([
-                       'name' => $request->ClassName,
+            $Subject = Subject::create([
+                       'name' => $request->SubjectName,
                     ]);
 
-            $this->SetMessage('Class Create Successfull' , 'success');
+            $this->SetMessage('Subject Create Successfull' , 'success');
                 
-            return redirect('/class');
+            return redirect('/subject');
             
 
         } catch (Exception $e){
@@ -53,14 +53,14 @@ class ClassController extends Controller
         
     }
 
-     // jquery view
-     public function show(Request $request){
+      // jquery view
+      public function show(Request $request){
   
         $id = $request->id;
               
          if(isset($id)){  
                $output = '';    
-               $class = Classes::where('id', $id)->first();
+               $Subject = Subject::where('id', $id)->first();
                             
                $output .= '  
                    <div class="table-responsive">  
@@ -68,11 +68,11 @@ class ClassController extends Controller
                            $output .= '  
                                <tr>  
                                     <td width="30%"><label>id</label></td>  
-                                    <td width="70%">'.$class->id.'</td>  
+                                    <td width="70%">'.$Subject->id.'</td>  
                                </tr>  
                                <tr>  
                                     <td width="30%"><label>name</label></td>  
-                                    <td width="70%">'.$class->name.'</td>  
+                                    <td width="70%">'.$Subject->name.'</td>  
                                </tr>
                        
                                ';   
@@ -83,21 +83,20 @@ class ClassController extends Controller
            }
        }
 
-// jquery edit
+       // jquery edit
      public function edit(Request $request){
 
         $id = $request->id;
   
-       if(isset($id))  
-       {  
-          $Classes = Classes::select('id', 'name')
-                                ->where('id', $id)
-                                ->first();
-    
-          echo json_encode($Classes);  
-       }
+        if(isset($id)){  
+            $Classes = Subject::select('id', 'name')
+                                    ->where('id', $id)
+                                    ->first();
+        
+            echo json_encode($Classes);  
+        }
   
-      }
+    }
   
       public function update(Request $request){
         
@@ -107,7 +106,7 @@ class ClassController extends Controller
               'name' => [
                   'required',
                   'regex:/^[A-Za-z0-9 ]+$/',
-                  'unique:classes,name,'.$id,
+                  'unique:subjects,name,'.$id,
               ],
           ]);
   
@@ -117,17 +116,17 @@ class ClassController extends Controller
   
         if($id != null)  
         {  
-              $Classes = Classes::select('id', 'name')
+              $subject = Subject::select('id', 'name')
                                 ->where('id', $id)
                                 ->first();
   
-              $Classes->name = $request->name;
-              $Classes->save();
-             // return response()->json([ 'success' => 'Permission Update Successfull']);
+              $subject->name = $request->name;
+              $subject->save();
+             // return response()->json([ 'success' => 'Subject Update Successfull']);
              
         }
   
-        $Classes = Classes::select('id' ,'name')->get(); 
+        $Subjects = Subject::select('id' ,'name')->get(); 
         
         $output = '';
   
@@ -138,7 +137,7 @@ class ClassController extends Controller
                           <thead class="thead-default">
                                 <tr>
                                     <th style=text-align:center>SL</th>
-                                    <th style=text-align:center>Class Name</th>
+                                    <th style=text-align:center>Subject Name</th>
                                     <th style=text-align:center>Action</th>
                                                      
                                 </tr>
@@ -151,26 +150,26 @@ class ClassController extends Controller
                           <tr>';
   
             $i=1;
-            foreach($Classes as $Class){            
+            foreach($Subjects as $subject){            
                                                       
               $output .=  '<th style=text-align:center scope="row">' .$i++. '</th>
                                                           
-                              <td style=text-align:center>' .$Class->name. '</td>
+                              <td style=text-align:center>' .$subject->name. '</td>
                                         
                     ';
               $output .= '
                          <td style=text-align:center>
                                                           
                               <!-- jquery view -->
-                                  <a name="view" value="view" id="'. $Class->id. '" class="btn btn-info btn-sm view_Class" title="View Class"><i class="fa fa-eye"></i></a>
+                                  <a name="view" value="view" id="'. $subject->id. '" class="btn btn-info btn-sm view_subject" title="View subject"><i class="fa fa-eye"></i></a>
                               <!-- jquery view end-->
                                                           
                               <!-- jquery edit -->  
-                                  <a  name="edit" value="Edit" id="'. $Class->id. '" class="btn btn-warning btn-sm edit_data" title="Edit Class"><i class="fa fa-edit"></i></a>
+                                  <a  name="edit" value="Edit" id="'. $subject->id. '" class="btn btn-warning btn-sm edit_data" title="Edit Class"><i class="fa fa-edit"></i></a>
                               <!-- jquery edit end -->
                                                           
                               <!-- jquery delete -->
-                                  <button class="btn btn-danger btn-sm delete" data-id="' .$Class->id. '" value="{{$Class->id}}"><i class="fa fa-trash"></i></button>
+                                  <button class="btn btn-danger btn-sm delete" data-id="' .$subject->id. '" value="{{$subject->id}}"><i class="fa fa-trash"></i></button>
                               <!-- jquery delete end -->
                                    
                           </td>
@@ -188,15 +187,16 @@ class ClassController extends Controller
       echo $output;
   
       }    
-  // jquery edit end 
+  // jquery edit end
+  
+   public function delete(Request $request, $id){
 
-       public function delete(Request $request, $id){
+        $subject = Subject::find($id);
 
-        $Class = Classes::find($id);
+        $subject->delete();
 
-        $Class->delete();
+        return response()->json([ 'success' => 'Subject Delete Successfull']);
 
-        return response()->json([ 'success' => 'Class Delete Successfull']);
+   }
 
-     }
 }

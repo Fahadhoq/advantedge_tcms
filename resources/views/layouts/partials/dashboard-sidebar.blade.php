@@ -54,6 +54,16 @@
                             </ul>
                         </li>
                         <!-- Class end -->
+
+                        <!-- Subject start-->
+                        <li>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-mail-open"></i><span> Subject <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
+                            <ul class="submenu">
+                                <li><a href="{{ route('subject.index') }}"> {{ __('Show All Subject') }}</a></li>
+                                <li><a href="{{ route('subject.create') }}"> {{ __('Create Subject ') }}</a></li>
+                            </ul>
+                        </li>
+                        <!-- Subject end -->
                        
                         @endrole
 
