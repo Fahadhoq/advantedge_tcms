@@ -81,6 +81,12 @@
     <!-- add page wise jquery link -->
     @yield('jquery')
     <!-- add page wise js link end -->
+   
+    <!-- multiselete -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css" />
+	<!-- multiselete end-->
 
     <!-- App js -->
     <script src="assets/js/app.js"></script>

@@ -67,7 +67,7 @@ class PermissionController extends Controller
     //     return view('Backend.permission.view' , $data );
     // }
 
-       // jquery view
+    // jquery view
     public function show(Request $request){
   
         $id = $request->id;

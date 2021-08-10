@@ -8,6 +8,7 @@ use App\Http\Controllers\UserTypeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\Admin\CourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +98,18 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/subject-delete-{id}', [SubjectController::class, 'delete'])->name('subject.delete');
     Route::post('/subject-edit-{id}', [SubjectController::class, 'edit'])->name('subject.edit');
     Route::post('/subject-update-{id}', [SubjectController::class, 'update']);
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/course', [CourseController::class, 'index'])->name('course.index');
+    Route::get('/course-create', [CourseController::class, 'create'])->name('course.create');
+    Route::post('/course-create', [CourseController::class, 'store']);
+    Route::post('/course-status-change-{id}', [CourseController::class, 'status_change']);
+    Route::post('/course-show-{id}', [CourseController::class, 'show'])->name('course.view');
+    Route::post('/course-delete-{id}', [CourseController::class, 'delete'])->name('course.delete');
+    Route::get('/course-edit-{id}', [CourseController::class, 'edit'])->name('course.edit');
+    Route::post('/course-edit-{id}', [CourseController::class, 'update']);
+    
 });
 
 // Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {

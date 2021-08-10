@@ -31,10 +31,8 @@ class UserController extends Controller
 
     public function create(Type $var = null)
     {
-
-        $data['user_types'] = User_Type::select('id' , 'name')
-                                  ->get();                          
-        
+        $data['user_types'] = User_Type::select('id' , 'name')->get();
+                             
         return view('Backend.User.Create' , $data);
     }
 
@@ -277,8 +275,7 @@ class UserController extends Controller
 
      }
 
-     public function User_Verify(Request $request, $id)
-     {
+     public function User_Verify(Request $request, $id){
         try{
 
             $id = $request->id;
