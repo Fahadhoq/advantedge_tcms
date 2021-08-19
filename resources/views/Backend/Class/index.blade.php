@@ -58,6 +58,7 @@
                                                     <tr>
                                                         <th style=text-align:center>SL</th>
                                                         <th style=text-align:center> Name</th>
+                                                        <th style=text-align:center> Academic Type</th>
                                                         <th style=text-align:center>Action</th>    
                                                     </tr>
                                                 </thead>
@@ -69,6 +70,13 @@
                                                     <tr>
                                                         <td style=text-align:center scope="row">{{$i++}}</td>   
                                                         <td style=text-align:center>{{$Class->name}}</td>
+                                                        <td style=text-align:center> 
+                                                                @if($Class->academic_type == 1) School
+                                                                @elseif($Class->academic_type == 2) Collage
+                                                                @elseif($Class->academic_type == 3) University
+                                                                @elseif($Class->academic_type == 4) Other
+                                                                @endif
+                                                       </td>
                                             
                                                         <td style=text-align:center>
                                                             <!-- <a href="{{ route('class.view' , $Class->id) }}" class="btn btn-info btn-sm" title="View Class"><i class="fa fa-eye"></i></a> -->
@@ -147,8 +155,18 @@
                 <form id="insert_form">
                     @csrf    
                           <label> Name</label>  
-                          <input type="text" name="name" id="name" class="form-control" />  
-                          <br />  
+                              <input type="text" name="name" id="name" class="form-control" />  
+                          <br /> 
+
+                          <label> School / Collage / University</label>  
+                                            <select class="form-control" name="AcademicType" id="AcademicType" >
+                                                    <option value="">Choose any one </option>
+                                                    <option id="AcademicType1" value="1" > School</option> 
+                                                    <option id="AcademicType2" value="2" > Collage</option> 
+                                                    <option id="AcademicType3" value="3" > University</option> 
+                                                    <option id="AcademicType4" value="4" > Other</option> 
+                                            </select>  
+                          <br /> 
                  
                           <input type="hidden" name="class_id" id="class_id" />  
                           <input type="submit" name="insert" id="insert" value="Insert" class="btn btn-success" />  
@@ -226,9 +244,21 @@ $(document).ready(function(){
                     success:function(data){  
 
                         $('#name').val(data.name);
-                        $('#class_id').val(data.id);  
+                        $('#class_id').val(data.id);
+
+                        if(data.academic_type == 1){
+                            $('#AcademicType1').attr("selected", "selected");          
+                        }else if(data.academic_type == 2){
+                            $('#AcademicType2').attr("selected", "selected");    
+                        }else if(data.academic_type == 3){
+                            $('#AcademicType3').attr("selected", "selected");       
+                        }else if(data.academic_type == 4){
+                            $('#AcademicType4').attr("selected", "selected");             
+                        }
+                        
                         $('#insert').val("Update");  
                         $('#add_data_Modal').modal('show');  
+ 
                     }  
             });  
     });  
@@ -244,6 +274,7 @@ $(document).ready(function(){
             {  
                 var class_id = $('#class_id').val();
                 var class_name = $('#name').val();
+                var AcademicType = $('#AcademicType').val();
                 var csrf_token = $('input[name=_token]').val();
                 var url = '/class-update-';
                 
@@ -262,6 +293,7 @@ $(document).ready(function(){
                         data : {
                         id : class_id,
                         name : class_name,
+                        AcademicType : AcademicType,
                         "_token": "{{ csrf_token() }}"
                         }, 
                         beforeSend:function(){  

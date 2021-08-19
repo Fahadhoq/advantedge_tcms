@@ -78,6 +78,7 @@ Route::middleware(['auth:sanctum', 'verified'])->namespace('Admin')->group(funct
     Route::post('/user-phone-number-availability-{phone}', [UserController::class, 'phone_number_availability']);
     Route::post('/email-availability-{email}', [UserController::class, 'email_availability']);
     Route::post('/create-at-date-filter', [UserController::class, 'create_at_date_filter']);
+    Route::post('/dynamicly-user-class-select-{id}', [UserController::class, 'dynamicly_user_class_select']);
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {

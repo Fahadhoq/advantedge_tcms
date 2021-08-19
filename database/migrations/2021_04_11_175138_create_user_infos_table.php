@@ -18,6 +18,14 @@ class CreateUserInfosTable extends Migration
             $table->foreignId('user_id');
             $table->integer('verified_by')->default('0');
             $table->integer('user_type_id')->default('0');
+            $table->string('father_name')->nullable();
+            $table->string('mother_name')->nullable();
+            $table->string('parent_phone_number')->nullable();
+            $table->string('address')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->integer('gender')->nullable();
+            $table->integer('nid_number')->nullable();
+            $table->integer('religion')->nullable();
             $table->timestamps();
         });
     }

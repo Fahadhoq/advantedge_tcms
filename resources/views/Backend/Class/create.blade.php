@@ -50,9 +50,23 @@
                              <div class="col-xl-6">
                                 <form action="{{ route( 'class.create' ) }}" method="post" >
                                 @csrf
+
                                 <div class="form-group">
                                     <lable style=font-weight:bold>Class Name </lable>
                                     <input type="text" class="form-control" name="ClassName" value="{{ old('ClassName') }}" placeholder="Enter Class name" >
+                                </div>
+
+                                <div class="form-group "> 
+                                    <label >School / Collage / University</label>
+                                        <div >
+                                            <select class="form-control" name="AcademicType" id="AcademicType" >
+                                                    <option value="">Choose any one </option>
+                                                    <option   value="1" > School</option> 
+                                                    <option   value="2" > Collage</option> 
+                                                    <option   value="3" > University</option> 
+                                                    <option   value="4" > Other</option> 
+                                            </select>
+                                        </div>
                                 </div>
                                 
                             

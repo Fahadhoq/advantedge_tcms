@@ -13,5 +13,6 @@ class Classes extends Model
 
     protected $fillable = [
         'name',
+        'academic_type',
     ];
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Role;
@@ -12,6 +13,9 @@ use App\Models\ModelHasRole;
 use DB;
 use App\Models\User_Info;
 use App\Models\User_Type;
+use App\Models\Classes;
+use App\Models\User_Academic_Info;
+
 use Illuminate\Support\Str;
 use Storage;
 
@@ -153,8 +157,16 @@ class UserController extends Controller
         $data['roles'] = Role::select('id' , 'name')->get();                          
 
         $data['hasRole'] = ModelHasRole::select('role_id')->where('model_id' , $id)->first();
-        $data['has_user_type'] = User_Info::select('user_type_id')->first(); 
-                                         
+
+        $data['User_Info'] = User_Info::where('user_id' , $id)->first(); 
+
+        $data['UserTypes'] =  User_Type::select('name')->where('id' , $data['User_Info']->user_type_id )->get();
+
+
+        $data['Classes'] = Classes::get(); 
+
+        $data['User_Academic_Info'] = User_Academic_Info::where('user_id' , $id)->first();
+                                     
         return view('Backend.User.edit' , $data);
     }
 
@@ -167,6 +179,9 @@ class UserController extends Controller
             'UserRole' => 'required',
             'UserType' => 'required',
       ]);
+
+      //image validation and storage 
+      if(($request->file('image') != null) || ($request->old_pic != null) ){
 
         if( $request->file('image') ) {
             $validator_img = Validator::make($request->all(), [
@@ -190,12 +205,16 @@ class UserController extends Controller
             $file_name = uniqid('profile-photos/' , true ).Str::random(10).'.'.$imageFile->getClientOriginalExtension();
 
             if($imageFile->isvalid()){
-                $imageFile->move(public_path('storage\profile-photos'), $file_name);
-                
+                $imageFile->move(public_path('storage\profile-photos'), $file_name);       
             }
         }
 
+      }
+      //image validation and storage end
+     
+
         try{
+            $SetMessage = 0 ;
 
             $id = $request->id;
             
@@ -215,24 +234,229 @@ class UserController extends Controller
             //update user_info table
             $user_info = User_Info::where('user_id' , $id)->first();
             $user_info->user_type_id = $request->UserType;
+           
+            if(isset($request->FatherName)){
+                $validator = Validator::make($request->all(), [
+                    'FatherName' => ['required', 'string', 'max:255']
+                ]);
+                if($validator->fails()){
+                    return redirect()->back()->WithErrors($validator)->WithInput();
+                }
+                $user_info->father_name = $request->FatherName;
+            }else{
+                $user_info->father_name = null;
+            }
+
+            if(isset($request->MotherName)){
+                $validator = Validator::make($request->all(), [
+                    'MotherName' => ['required', 'string', 'max:255']
+                ]);
+                if($validator->fails()){
+                    return redirect()->back()->WithErrors($validator)->WithInput();
+                 }
+                $user_info->mother_name = $request->MotherName;
+            }else{
+                $user_info->mother_name = null;
+            }
+
+            if(isset($request->Parentphone)){
+                $validator = Validator::make($request->all(), [
+                    'Parentphone' => 'required|regex:/(01)[0-9]{9}/|min:11|max:11',   
+              ]);
+              if($validator->fails()){
+                return redirect()->back()->WithErrors($validator)->WithInput();
+             }
+        
+                $user_info->parent_phone_number = $request->Parentphone;
+            }else{
+                $user_info->parent_phone_number = null;
+            }
+
+            if(isset($request->Address)){
+                $validator = Validator::make($request->all(), [
+                    'Address' => ['required', 'string', 'max:255']
+                ]);
+                if($validator->fails()){
+                    return redirect()->back()->WithErrors($validator)->WithInput();
+                 }
+                $user_info->address = $request->Address;
+            }else{
+                $user_info->address = null;
+            }
+
+            if(isset($request->DateOfBirth)){
+                $validator = Validator::make($request->all(), [
+                    'DateOfBirth' => 'required',
+              ]);
+              if($validator->fails()){
+                return redirect()->back()->WithErrors($validator)->WithInput();
+             }
+                $user_info->date_of_birth = $request->DateOfBirth;
+            }else{
+                $user_info->date_of_birth = null;
+            }
+
+            if(isset($request->UserGender)){
+                $validator = Validator::make($request->all(), [
+                    'UserGender' => 'required',
+                 ]);
+                 if($validator->fails()){
+                    return redirect()->back()->WithErrors($validator)->WithInput();
+                 }
+                $user_info->gender = $request->UserGender;
+            }else{
+                $user_info->gender = null;
+            }
+
+            if(isset($request->NidNumber)){
+                $validator = Validator::make($request->all(), [
+                    'NidNumber' => 'required|regex:/[0-9]/|min:10|max:10',
+              ]);
+              if($validator->fails()){
+                return redirect()->back()->WithErrors($validator)->WithInput();
+             }
+                $user_info->nid_number = $request->NidNumber;
+            }else{
+                $user_info->nid_number = null;
+            }
+
+            if(isset($request->Religion)){
+                $validator = Validator::make($request->all(), [
+                    'Religion' => 'required',
+              ]);
+              if($validator->fails()){
+                return redirect()->back()->WithErrors($validator)->WithInput();
+             }
+                $user_info->religion = $request->Religion;
+            }else{
+                $user_info->religion = null;
+            }
 
             $user_info->save();
+            
+            //update User_Academic_Info table
+            $user_academic_info = User_Academic_Info::where('user_id' , $id)->first();
+            
+            if($user_academic_info == null){ 
+                // create User_Academic_Info
+                if( ($request->UserAcademicType != 0) || ($request->UserClass != 0) || isset($request->UserInstituteName)){
+                    $New_User_Academic_Info = new User_Academic_Info;
+
+                    $New_User_Academic_Info->user_id      = $user_info->user_id;
+                    $New_User_Academic_Info->user_info_id = $user_info->id;
+                }
+                
+               
+                if(isset($request->UserInstituteName)){
+                    $validator = Validator::make($request->all(), [
+                        'UserInstituteName' => ['required', 'string', 'max:255']
+                    ]);
+                    if($validator->fails()){
+                        return redirect()->back()->WithErrors($validator)->WithInput();
+                     }
+                    $New_User_Academic_Info->user_institute_name = $request->UserInstituteName;
+                }
+               
+
+                if( $request->UserAcademicType != 0 ){
+                    $validator = Validator::make($request->all(), [
+                        'UserAcademicType' => 'required|numeric|gt:0',
+                        'UserClass' => 'required|numeric|gt:0'
+                    ]);
+                    if($validator->fails()){
+                        $SetMessage = 1 ;
+                        $this->SetMessage('Class Is Required  When Add Academic Type' , 'danger');
+                        return redirect()->back();
+                     }
+                    $New_User_Academic_Info->user_academic_type  = $request->UserAcademicType;
+                }
+
+                if($request->UserClass != 0){
+                    $validator = Validator::make($request->all(), [
+                        'UserClass' => 'required|numeric|gt:0'
+                    ]);
+                    if($validator->fails()){
+                        $SetMessage = 1 ;
+                        $this->SetMessage('Class Is Required' , 'danger');
+                        return redirect()->back();
+                     }
+                    $New_User_Academic_Info->user_class  = $request->UserClass;
+                }
+                
+                if( ($request->UserAcademicType != 0) || ($request->UserClass != 0) || isset($request->UserInstituteName)){
+                    $New_User_Academic_Info->save();
+                }
+                // create User_Academic_Info end
+
+            }else{
+                // update User_Academic_Info
+                if(isset($request->UserInstituteName)){
+                    $validator = Validator::make($request->all(), [
+                        'UserInstituteName' => ['required', 'string', 'max:255']
+                    ]);
+                    if($validator->fails()){
+                        return redirect()->back()->WithErrors($validator)->WithInput();
+                     }
+                    $user_academic_info->user_institute_name = $request->UserInstituteName;
+                }else{
+                    $user_academic_info->user_institute_name = null;
+                }
+
+                if( $request->UserAcademicType != 0 ){
+                    $validator = Validator::make($request->all(), [
+                        'UserAcademicType' => 'required|numeric|gt:0',
+                        'UserClass' => 'required|numeric|gt:0'
+                    ]);
+                    if($validator->fails()){
+                        $SetMessage = 1 ;
+                        $this->SetMessage('Class Is Required  When Add Academic Type' , 'danger');
+                        return redirect()->back();
+                     }
+                    $user_academic_info->user_academic_type = $request->UserAcademicType;
+                }else{
+                    $user_academic_info->user_academic_type = null;
+                }
+
+                if($request->UserClass != 0){
+                    $validator = Validator::make($request->all(), [
+                        'UserClass' => 'required|numeric|gt:0'
+                    ]);
+                    if($validator->fails()){
+                        $SetMessage = 1 ;
+                        $this->SetMessage('Class Is Required' , 'danger');
+                        return redirect()->back();
+                     }
+                    $user_academic_info->user_class = $request->UserClass;
+                }else{
+                    $user_academic_info->user_class = null;
+                }
+
+                $user_academic_info->save();
+
+            // update User_Academic_Info end
+
+            }
+
+            //update User_Academic_Info table end
+            
 
 
 
             DB::table('model_has_roles')->where('model_id', $id)->delete();
 
             //user model_has_roles table update
-             $user->assignRole($request->UserRole);
-          
-            $this->SetMessage('User Update Successfull' , 'success');
+            $user->assignRole($request->UserRole);
+            
+            if($SetMessage != 1){
+                $this->SetMessage('User Update Successfull' , 'success');
+            }
 
             $data['users'] = User::select('id', 'name', 'email', 'phone' , 'profile_photo_path')->get();
             
             return redirect('/user')->with($data);
             
         
-        } catch (Exception $e){
+        }catch (Exception $e){
             
             $this->SetMessage($e->getMessage() , 'danger');
 
@@ -408,5 +632,36 @@ class UserController extends Controller
 
     }
 // create_at_date_filter end 
+
+public function dynamicly_user_class_select(Request $request){
+
+    $user_academic_type_id = $request->user_academic_type_id;
+
+    $query_class = Classes::select('id','name')->where('academic_type' , $user_academic_type_id)->get();
+   
+    $output = '';
+    $output .= '<option value="0">Choose any one</option>';
+    
+    if($request->action == "All_Class_Show"){
+        foreach($query_class as $query_class){
+            $output .= '<option value="'.$query_class->id.'">'.$query_class->name.'</option>';
+        }
+    }elseif ($request->action == "Selected_Class_Show") {
+        $user_id = $request->user_id;
+        $data['User_Academic_Info'] = User_Academic_Info::select('user_class')->where('user_id' , $user_id)->first();
+
+        foreach($query_class as $query_class){ 
+            if($data['User_Academic_Info']->user_class == $query_class->id){
+                $output .= '<option value="'.$query_class->id.'" selected>'.$query_class->name.'</option>';
+            }else{
+                $output .= '<option value="'.$query_class->id.'">'.$query_class->name.'</option>';
+            }
+        }
+    }
+
+ 
+    echo $output;
+
+  }
 
 }
