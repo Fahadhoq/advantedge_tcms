@@ -16,21 +16,7 @@ class CourseController extends Controller
     public function index()
     {
         $data['courses'] = Course::get();
-        
-        $Array_Classes = array();
-        foreach($data['courses'] as $courses){
-            $Classes = Classes::select('id', 'name')->where('id' , $courses->class)->first();
-            array_push($Array_Classes , $Classes);
-        }
-        $data['Classes'] = $Array_Classes;
-
-        $Array_Subjects = array();
-        foreach($data['courses'] as $courses){
-            $Subject = Subject::select('id', 'name')->where('id' , $courses->subject)->first();
-            array_push($Array_Subjects , $Subject);
-        }
-        $data['Subjects'] = $Array_Subjects;
-        
+      
         return view('Backend.Admin.Course.index' , $data);
     }
 

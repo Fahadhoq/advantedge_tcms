@@ -44,13 +44,13 @@ class UserController extends Controller
     {  
         
         //for backendend validation
-          $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255' , 'unique:users,email'],
             'password' => 'required|confirmed|min:8',
             'phone' => 'required|regex:/(01)[0-9]{9}/|min:11|max:11|unique:users,phone',
             'UserType' => 'required',
-      ]);
+        ]);
 
     if($validator->fails()){
         return redirect()->back()->WithErrors($validator)->WithInput();

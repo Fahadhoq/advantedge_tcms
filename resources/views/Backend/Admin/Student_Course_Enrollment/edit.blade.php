@@ -136,10 +136,10 @@
                                                                     <option value="">Choose Class Type</option> 
                                                                     @if($course->class_type == 1)
                                                                         <option  id="" value="1" selected>Online</option>
-                                                                        <option  id="" value="2">Offline</option> 
-                                                                    @elseif($course->class_type == 2)
+                                                                        <option  id="" value="0">Offline</option> 
+                                                                    @elseif($course->class_type == 0)
                                                                         <option  id="" value="1">Online</option>
-                                                                        <option  id="" value="2" selected>Offline</option> 
+                                                                        <option  id="" value="0" selected>Offline</option> 
                                                                     @endif
                                                                              
                                                         </select>
@@ -167,6 +167,7 @@
                                             <div class="form-group">
                                                 <label>Enrollment Last Date </label>
                                                 <div>
+                                                    
                                                      <input class="form-control" type="date" value="{{ $course->enrollment_last_date }}" name="EnrollmentLastDate" id="EnrollmentLastDate">
                                                 </div>
                                             </div>

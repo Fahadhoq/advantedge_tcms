@@ -22,15 +22,16 @@
                         <!-- start row -->
                         <div class="row align-items-center">
                             
-                            <div class="col-sm-6">
-                                <h4 class="page-title">ALL COURSES </h4>
+                            <div class="col-sm-5">
+                                <h4 class="page-title">ALL STUDENTS ENROLLMENT COURSES </h4>
                             </div>
                             
-                            <div class="col-sm-6">
+                            <div class="col-sm-7">
                                 <ol class="breadcrumb float-right">
                                     <li class="breadcrumb-item"><a href="javascript:void(0);">Training Center Management System</a></li>
-                                    <li class="breadcrumb-item active">COURSES </li>
-                                    <li class="breadcrumb-item active">ALL COURSES </li>
+                                    <li class="breadcrumb-item active">Coures Enrollment </li>
+                                    <li class="breadcrumb-item active">Student Coure Enrollment </li>
+                                    <li class="breadcrumb-item active">All Students Enrollment Coures</li>
                                 </ol>
                             </div>
                        
@@ -58,11 +59,11 @@
                                                     <tr>
                                                         <th style=text-align:center> SL</th>
                                                         <th style=text-align:center> ID</th>
-                                                        <th style=text-align:center> Class</th>
-                                                        <th style=text-align:center> Subject</th>
-                                                        <th style=text-align:center> Student Limit</th>
-                                                        <th style=text-align:center> Course Fee</th>
-                                                        <th style=text-align:center> Enrollment Last Date</th>
+                                                        <th style=text-align:center> Student ID</th>
+                                                        <th style=text-align:center> Student Name</th>
+                                                        <th style=text-align:center> Course ID</th>
+                                                        <th style=text-align:center> Course Name</th>
+                                                        <th style=text-align:center> Is Pay </th>
                                                         <th style=text-align:center> Status</th>    
                                                         <th style=text-align:center> Action</th>  
                                                     </tr>
@@ -71,46 +72,44 @@
         
                                                 <tbody>
                                                 @php $i=1 @endphp
-                                                @foreach($courses as $course)
+                                                @foreach($StudentsEnrollmentCourses as $StudentEnrollmentCourse)
                                                     <tr>
                                                         <td style=text-align:center scope="row">{{$i++}}</td> 
-                                                        <td style=text-align:center scope="row">{{$course->id}}</td>
-                                                        <!-- class -->
-                                                            @php $course_class= App\Models\Classes::select('name')->where('id' , $course->class)->first(); @endphp
-                                                            <td style=text-align:center>{{$course_class->name}}</td>
-                                                        <!-- class end -->
-                                                        <!-- subject -->
-                                                            @php $course_subject = App\Models\Subject::select('name')->where('id' , $course->subject)->first(); @endphp
-                                                            <td style=text-align:center>{{$course_subject->name}}</td>
-                                                        <!-- subject end -->
-                                                        <td style=text-align:center>{{$course->student_limit}}</td>
-                                                        <td style=text-align:center>{{$course->course_fee}}</td>
-                                                        <td style=text-align:center>{{$course->enrollment_last_date}}</td>
-                                                        <!-- status -->
-                                                        @if($course->status == 0)
+                                                        <td style=text-align:center scope="row">{{$StudentEnrollmentCourse->id}}</td>
+                                                        
+                                                        <!-- student info -->
+                                                        <td style=text-align:center scope="row">{{$StudentEnrollmentCourse->user->id}}</td>
+                                                        <td style=text-align:center scope="row">{{$StudentEnrollmentCourse->user->name}}</td>
+                                                        <!-- student info end -->
+
+                                                        <!-- course info -->
+                                                        <td style=text-align:center scope="row">{{$StudentEnrollmentCourse->course_id}}</td>
+                                                             @php $course = App\Models\Subject::select('name')->where('id' , $StudentEnrollmentCourse->course->subject)->first(); @endphp
+                                                        <td style=text-align:center scope="row">{{$course->name}}</td>
+                                                        <!-- course info end -->
+                                                       
+                                                        <td style=text-align:center scope="row"> @if($StudentEnrollmentCourse->is_pay == 1 ) Payment Compleated @else Not Paid Yet @endif </td>
+                                                         <!-- status -->
+                                                         @if($StudentEnrollmentCourse->status == 0)
                                                         <td style=text-align:center>
-                                                            <button class="btn btn-danger btn-sm course_status_change" data-id="{{$course->id}}" value="InActive">InActive</button>  
+                                                            <button class="btn btn-danger btn-sm enrolled_course_status_change" data-id="{{$StudentEnrollmentCourse->id}}" value="InActive">InActive</button>  
                                                         </td>
-                                                        @elseif($course->status == 1)
+                                                        @elseif($StudentEnrollmentCourse->status == 1)
                                                         <td style=text-align:center>
-                                                            <button class="btn btn-success btn-sm course_status_change" data-id="{{$course->id}}" value="Active">Active</button> 
+                                                            <button class="btn btn-success btn-sm enrolled_course_status_change" data-id="{{$StudentEnrollmentCourse->id}}" value="Active">Active</button> 
                                                         </td>
                                                           @endif
                                                         <!-- status end  -->
-
-                    
+                                                        
                                                         <td style=text-align:center>
                                                             <!-- <a href="" class="btn btn-info btn-sm" title="View course"><i class="fa fa-eye"></i></a> -->
                                                             <!-- jquery view -->
-                                                            <a  name="view" value="view" id="{{$course->id}}" class="btn btn-info btn-sm view_course" title="View course"><i class="fa fa-eye"></i></a>
+                                                            <a  name="view" value="view" id="{{$StudentEnrollmentCourse->id}}" class="btn btn-info btn-sm view_enrolled_course" title="View enrolled course"><i class="fa fa-eye"></i></a>
                                                             <!-- jquery view end-->
-
-                                                            <a href="{{ route('course.edit' , $course->id) }}" class="btn btn-warning btn-sm" title="Edit course"><i class="fa fa-edit"></i></a>
-                                                           
+         
                                                             @can('delete')
-                                                            <button class="btn btn-danger btn-sm delete" data-id="{{$course->id}}" value="{{$course->id}}"><i
-                                                            class="fa fa-trash"></i></button>         
-                                                            <!-- <a href="" id="{{$course->id}}" class="btn btn-danger btn-sm remove" title="delete course" onclick="return confirm('Are you sure to delete?')"><i class="fa fa-trash"></i></a> -->
+                                                            <button class="btn btn-danger btn-sm enrolled_course_drop" data-id="{{$StudentEnrollmentCourse->id}}" value="{{$StudentEnrollmentCourse->id}}" title="drop enrolled course"><i class="fa fa-trash"></i></button>         
+                                                            <!-- <a href="" id="{{$StudentEnrollmentCourse->id}}" class="btn btn-danger btn-sm remove" title="delete course" onclick="return confirm('Are you sure to delete?')"><i class="fa fa-trash"></i></a> -->
                                                             @endcan
                                                        
                                                         </td> 
@@ -171,9 +170,10 @@
 
 @section('script')
 <script>
-//view class
+
 $(document).ready(function(){  
      
+  //view class
     $(document).on('click', '.view_course', function(){
            var csrf_token = $('input[name=_token]').val();  
            var course_id = $(this).attr("id"); 
@@ -200,15 +200,16 @@ $(document).ready(function(){
                 }  
            });  
       }); 
+      //view class end
 
   // status  change 
-$('#datatable-buttons').delegate('.course_status_change', 'click', function(){
+$('#datatable-buttons').delegate('.enrolled_course_status_change', 'click', function(){
      
      var csrf_token = $('input[name=_token]').val();
      
-     var url = '/course-status-change-';
+     var url = '/student-enrolled-course-status-change-';
      var value = $(this).val();
-     var course_id = $(this).attr("data-id");
+     var enrolled_course_id = $(this).attr("data-id");
      console.log(value);
      
      $.confirm({
@@ -223,10 +224,10 @@ $('#datatable-buttons').delegate('.course_status_change', 'click', function(){
                  });
                      
                  $.ajax({
-                     url: url + course_id,
+                     url: url + enrolled_course_id,
                      type: 'post',
                      data: {
-                                 id: course_id,
+                                 enrolled_course_id : enrolled_course_id,
                                  value: value,
                                 "_token": "{{ csrf_token() }}"
                              },
@@ -256,19 +257,17 @@ $('#datatable-buttons').delegate('.course_status_change', 'click', function(){
          });
  //status  change end
 
-    // delete course 
-    $('#datatable-buttons').delegate('.delete', 'click', function(){
+    // drop enrolled course 
+    $('#datatable-buttons').delegate('.enrolled_course_drop', 'click', function(){
     
         var csrf_token = $('input[name=_token]').val();
         var current_tr = $(this).closest('tr');
-        var url = '/course-delete-';
-        var data_id = $(this).attr("data-id");
+        var url = '/student-enrolled-course-drop-';
+        var enrolled_course_id = $(this).attr("data-id");
                 
-        console.log(data_id);
-
-        $.confirm({
+       $.confirm({
                     title: 'Confirm!!!',
-                    content: 'Are you sure you want to delete?',
+                    content: 'Are you sure you want to drop?',
                     buttons: {
                         confirm: function () {
                             $.ajaxSetup({
@@ -278,10 +277,10 @@ $('#datatable-buttons').delegate('.course_status_change', 'click', function(){
                     });
 
                         $.ajax({
-                        url: url + data_id,
+                        url: url + enrolled_course_id,
                         type: 'post',
                         data: {
-                                    id: data_id,
+                                 enrolled_course_id: enrolled_course_id,
                                 "_token": "{{ csrf_token() }}"
                                 },
                                 
@@ -307,11 +306,9 @@ $('#datatable-buttons').delegate('.course_status_change', 'click', function(){
         });
             
     });
-    // delete class end
+    // drop enrolled course end
 
 });
-//view class end
-
 
 
 </script>

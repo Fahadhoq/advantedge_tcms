@@ -74,11 +74,6 @@
                             </ul>
                         </li>
                         <!-- Course end -->
-                       
-                        @endrole
-
-                        
-                         
 
                         <!-- user start -->
                         <li>
@@ -90,8 +85,32 @@
                             </ul>
                         </li>
                         <!-- user end -->
+                       
+                        @endrole
 
-                      
+                        <!-- Enrollment start -->
+                        <li>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-share"></i><span> COURSE ENROLLMENT <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
+                            <ul class="submenu">
+                                <li>
+                                    <a href="javascript:void(0);">Student Course Enrollment <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                    <ul class="submenu">
+                                        <li><a href="{{ route('StudentCourseEnrollment.enroll') }}">enroll course</a></li>
+                                        <li><a href="{{ route('StudentCourseEnrollment.index') }}">all enrolled courses</a></li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <a href="javascript:void(0);">Teacher Course Enrollment <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                    <ul class="submenu">
+                                        <li><a href="javascript:void(0);">enroll course</a></li>
+                                        <li><a href="javascript:void(0);">all enrolled courses</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- Enrollment end -->
+
                         
                         <li class="menu-title">Components</li>
 

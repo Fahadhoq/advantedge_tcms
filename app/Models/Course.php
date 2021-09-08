@@ -23,4 +23,6 @@ class Course extends Model
         'enrollment_last_date',
         'status',
     ];
+
+
 }

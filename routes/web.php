@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\StudentCourseEnrollmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +28,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/cancle-button', [DashboardController::class, 'cancle'])->name('cancle.button');;
+    Route::get('/cancle-button', [DashboardController::class, 'cancle'])->name('cancle.button');
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
@@ -112,6 +113,21 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/course-edit-{id}', [CourseController::class, 'update']);
     
 });
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/students-enrolled-courses', [StudentCourseEnrollmentController::class, 'index'])->name('StudentCourseEnrollment.index');
+    Route::get('/student-course-enroll', [StudentCourseEnrollmentController::class, 'enroll'])->name('StudentCourseEnrollment.enroll');
+    Route::post('/student-course-enrollment-student-search-{text}', [StudentCourseEnrollmentController::class, 'student_search'])->name('StudentEnrollment.student_search');
+    Route::post('/student-course-enrollment-student-detials-show-{text}', [StudentCourseEnrollmentController::class, 'student_detials_show']);
+    Route::post('/student-course-enrollment-store', [StudentCourseEnrollmentController::class, 'enroll_store']);
+    Route::post('/student-course-enrollment-check-sit-limit-{id}', [StudentCourseEnrollmentController::class, 'check_sit_limit']);
+    Route::post('/student-course-enrollment-check-student-is-enrolled-{id}', [StudentCourseEnrollmentController::class, 'check_student_is_enrolled']);
+    Route::post('/student-course-enrollment-check-student-course-is-clash-{id}', [StudentCourseEnrollmentController::class, 'check_student_courde_is_clash']);
+    Route::post('/student-enrolled-course-status-change-{id}', [StudentCourseEnrollmentController::class, 'status_change']);
+    Route::post('/student-enrolled-course-drop-{id}', [StudentCourseEnrollmentController::class, 'drop_course']);
+    
+});
+
 
 // Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 //     return view('dashboard');
