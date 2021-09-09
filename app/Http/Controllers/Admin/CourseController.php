@@ -346,4 +346,36 @@ class CourseController extends Controller
 
      }
 
+     public function dynamic_subject_select(Request $request){
+
+        
+        $Classes = Classes::select('id', 'name')->get();
+
+        if($request->action == "Class_Select"){
+            $Subjects = Subject::select('id' , 'name' , 'class_id')->where('class_id' , $request->class_id)->get();
+       
+            $output = '<option value="">Choose One Subject</option>';
+            foreach($Subjects as $Subject){
+                $output .= '<option  id="'.$Subject->id.'" value="'.$Subject->id.'">'.$Subject->name.'</option>';
+            }
+        }elseif ($request->action == "Class_Edit") {
+            $offer_course = Course::select('id', 'class', 'subject')->where('id' , $request->offer_course_id)->first();
+            $Subjects = Subject::select('id' , 'name' , 'class_id')->where('class_id' , $request->class_id)->get();
+           
+            $output = '<option value="">Choose One Subject</option>';
+          
+            foreach($Subjects as $Subject){
+                if($offer_course->subject == $Subject->id){
+                    $output .= '<option  id="'.$Subject->id.'" value="'.$Subject->id.'" selected>'.$Subject->name.'</option>';
+                }else{
+                    $output .= '<option  id="'.$Subject->id.'" value="'.$Subject->id.'" >'.$Subject->name.'</option>';
+                }
+            }
+        }
+                  
+
+        echo $output;
+
+     }
+
 }

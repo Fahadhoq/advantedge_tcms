@@ -57,7 +57,8 @@
                                                 <thead class="thead-default">
                                                     <tr>
                                                         <th style=text-align:center>SL</th>
-                                                        <th style=text-align:center> Name</th>
+                                                        <th style=text-align:center>Class</th>
+                                                        <th style=text-align:center>Subject Name</th>
                                                         <th style=text-align:center>Action</th>    
                                                     </tr>
                                                 </thead>
@@ -67,7 +68,8 @@
                                                 @php $i=1 @endphp
                                                 @foreach($subjects as $subject)
                                                     <tr>
-                                                        <td style=text-align:center scope="row">{{$i++}}</td>   
+                                                        <td style=text-align:center scope="row">{{$i++}}</td> 
+                                                        <td style=text-align:center scope="row">{{$subject->class->name}}</td>   
                                                         <td style=text-align:center>{{$subject->name}}</td>
                                             
                                                         <td style=text-align:center>
@@ -139,24 +141,25 @@
 <div id="add_data_Modal" class="modal fade">  
       <div class="modal-dialog">  
            <div class="modal-content">  
+               
                 <div class="modal-header">  
                      <!-- <button type="button" class="close" data-dismiss="modal">&times;</button> -->  
                      <h4 class="modal-title">EDIT SUBJECT</h4>  
                 </div>  
-                <div class="modal-body">
+              
+                <div class="modal-body">         
                 <form id="insert_form">
-                    @csrf    
-                          <label> Name</label>  
-                          <input type="text" name="name" id="name" class="form-control" />  
-                          <br />  
-                 
-                          <input type="hidden" name="subject_id" id="subject_id" />  
-                          <input type="submit" name="insert" id="insert" value="Insert" class="btn btn-success" />  
-                     </form>  
-                </div>  
+                    @csrf 
+                    <div id="subject_edit">  
+                      
+                    </div>     
+                </form>  
+                </div> 
+
                 <div class="modal-footer">  
                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>  
                 </div>  
+
            </div>  
       </div>  
  </div>
@@ -224,13 +227,13 @@ $(document).ready(function(){
                         id : subject_id,
                         "_token": "{{ csrf_token() }}"
                         },    
-                    dataType:"json",  
+                     
                     success:function(data){  
-
-                        $('#name').val(data.name);
-                        $('#subject_id').val(data.id);  
-                        $('#insert').val("Update");  
-                        $('#add_data_Modal').modal('show');  
+  
+                        $('#add_data_Modal').modal('show');
+                        $('#subject_edit').html(data);  
+                        $('#insert').val("Update");
+                      
                     }  
             });  
     });  
@@ -245,11 +248,12 @@ $(document).ready(function(){
             else  
             {  
                 var subject_id = $('#subject_id').val();
+                var class_id = $('#Class').val();
                 var subject_name = $('#name').val();
                 var csrf_token = $('input[name=_token]').val();
                 var url = '/subject-update-';
                 
-                console.log(url+subject_id);
+                console.log(class_id);
 
                     $.ajaxSetup({
                         headers: {
@@ -264,6 +268,7 @@ $(document).ready(function(){
                         data : {
                         id : subject_id,
                         name : subject_name,
+                        class_id : class_id,
                         "_token": "{{ csrf_token() }}"
                         }, 
                         beforeSend:function(){  

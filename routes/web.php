@@ -111,6 +111,7 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/course-delete-{id}', [CourseController::class, 'delete'])->name('course.delete');
     Route::get('/course-edit-{id}', [CourseController::class, 'edit'])->name('course.edit');
     Route::post('/course-edit-{id}', [CourseController::class, 'update']);
+    Route::post('/dynamic-subject-select-{id}', [CourseController::class, 'dynamic_subject_select']);
     
 });
 

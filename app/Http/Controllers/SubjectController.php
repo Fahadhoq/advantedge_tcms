@@ -4,19 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Subject;
+use App\Models\Classes;
 use Validator;
 
 class SubjectController extends Controller
 {
     public function index(){
        
-        $data['subjects'] = Subject::select('id' ,'name')->get();
-       
+        $data['subjects'] = Subject::select('id' ,'name', 'class_id')->get();
+      
         return view('Backend.Subject.index' , $data );
     }
 
     public function create(){
-        return view('Backend.Subject.create');
+       
+        $data['Classes'] = Classes::select('id' ,'name')->get();
+       
+        return view('Backend.Subject.create', $data);
     }
 
     public function store(Request $request){
@@ -26,7 +30,8 @@ class SubjectController extends Controller
                 'required',
                 'regex:/^[A-Za-z0-9 ]+$/',
                 'unique:subjects,name',
-            ] 
+            ],
+            'Class' => 'required'
         ]);
 
         if($validator->fails()){
@@ -37,6 +42,7 @@ class SubjectController extends Controller
 
             $Subject = Subject::create([
                        'name' => $request->SubjectName,
+                       'class_id' => $request->Class
                     ]);
 
             $this->SetMessage('Subject Create Successfull' , 'success');
@@ -61,6 +67,7 @@ class SubjectController extends Controller
          if(isset($id)){  
                $output = '';    
                $Subject = Subject::where('id', $id)->first();
+               $class = Classes::find($Subject->class_id);
                             
                $output .= '  
                    <div class="table-responsive">  
@@ -69,9 +76,13 @@ class SubjectController extends Controller
                                <tr>  
                                     <td width="30%"><label>id</label></td>  
                                     <td width="70%">'.$Subject->id.'</td>  
+                               </tr>
+                               <tr>  
+                                    <td width="30%"><label>Class</label></td>  
+                                    <td width="70%">'.$class->name.'</td>  
                                </tr>  
                                <tr>  
-                                    <td width="30%"><label>name</label></td>  
+                                    <td width="30%"><label>Subject Name</label></td>  
                                     <td width="70%">'.$Subject->name.'</td>  
                                </tr>
                        
@@ -89,11 +100,35 @@ class SubjectController extends Controller
         $id = $request->id;
   
         if(isset($id)){  
-            $Classes = Subject::select('id', 'name')
+            $Subject = Subject::select('id', 'name', 'class_id')
                                     ->where('id', $id)
                                     ->first();
+            $Classes = Classes::select('id' ,'name')->get();
+                               
+
+            $output = '<div class="form-group"> 
+                            <label >Class</label>
+                                <div >
+                                    <select class="form-control" name="Class" id="Class">
+                                        <option value="">Choose one class </option>';
+                                            foreach($Classes as $Class){
+                                                $output .= '<option  id="'.$Class->id.'" value="'.$Class->id.'"'; if($Class->id == $Subject->class_id){$output.='selected';} $output.='>'.$Class->name.'</option>';
+                                            }
+                                                
+                                $output .=  '</select>
+                                </div>
+                        </div>';
+                        
+            $output .= '<label>Subject Name</label>  
+                            <input type="text" name="name" id="name" value="'.$Subject->name.'" class="form-control" />  
+                        <br />';
+            
+            $output .= '<input type="hidden" name="subject_id" id="subject_id"  value="'.$Subject->id.'" />  
+                       <input type="submit" name="insert" id="insert" value="Insert" class="btn btn-success" />';            
+                        
+                        echo $output;
         
-            echo json_encode($Classes);  
+          //  echo json_encode($Subject);  
         }
   
     }
@@ -116,17 +151,18 @@ class SubjectController extends Controller
   
         if($id != null)  
         {  
-              $subject = Subject::select('id', 'name')
+              $subject = Subject::select('id', 'name', 'class_id')
                                 ->where('id', $id)
                                 ->first();
   
               $subject->name = $request->name;
+              $subject->class_id = $request->class_id;
               $subject->save();
              // return response()->json([ 'success' => 'Subject Update Successfull']);
              
         }
   
-        $Subjects = Subject::select('id' ,'name')->get(); 
+        $Subjects = Subject::select('id' ,'name', 'class_id')->get(); 
         
         $output = '';
   
@@ -137,6 +173,7 @@ class SubjectController extends Controller
                           <thead class="thead-default">
                                 <tr>
                                     <th style=text-align:center>SL</th>
+                                    <th style=text-align:center>Class</th>
                                     <th style=text-align:center>Subject Name</th>
                                     <th style=text-align:center>Action</th>
                                                      
@@ -153,7 +190,7 @@ class SubjectController extends Controller
             foreach($Subjects as $subject){            
                                                       
               $output .=  '<th style=text-align:center scope="row">' .$i++. '</th>
-                                                          
+                              <td style=text-align:center>' .$subject->class->name. '</td>                            
                               <td style=text-align:center>' .$subject->name. '</td>
                                         
                     ';

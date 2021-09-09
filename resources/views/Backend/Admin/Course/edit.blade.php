@@ -52,11 +52,12 @@
                            <!-- 1st part              -->
                                 <div class="col-lg-6">
                                     <div class="p-20">
+                                        <input type="hidden" id="offer_course_id" value="{{$course->id}}" />
 
                                                <div class="form-group "> 
                                                     <label >Class</label>
                                                     <div >
-                                                        <select class="form-control" name="Class" id="Class" value="{{ old('Class') }}">
+                                                        <select class="form-control" name="Class" id="Class_Edit" value="{{ old('Class') }}">
                                                                       <option value="">Choose One Class</option>
                                                                 @foreach($Classes as $Classe)
                                                                     @if($Classe->id == $course->class)
@@ -74,13 +75,7 @@
                                                     <div >
                                                         <select class="form-control" name="Subject" id="Subject" value="{{ old('Subject') }}">
                                                                       <option value="">Choose One Subject</option>
-                                                                @foreach($Subjects as $Subject)
-                                                                    @if($Subject->id == $course->subject)
-                                                                       <option  id="{{$Subject->id}}" value="{{$Subject->id}}" selected>{{$Subject->name}}</option>    
-                                                                    @else
-                                                                       <option  id="{{$Subject->id}}" value="{{$Subject->id}}">{{$Subject->name}}</option>
-                                                                    @endif
-                                                                @endforeach
+                                                                
                                                         </select>
                                                     </div>
                                                </div>
@@ -239,6 +234,53 @@
 @section('script')
 <script>
 $(document).ready(function(){
+
+    //dynamicly subject select
+    dynamicly_subject_select();
+
+    function dynamicly_subject_select(){
+        if($('#Class_Edit').val() != ''){
+
+            var action = $('#Class_Edit').attr("id");
+            var offer_course_id = $('#offer_course_id').val();
+            var class_id = $('#Class_Edit').val();
+            var url = '/dynamic-subject-select-';
+            var csrf_token = $('input[name=_token]').val();
+            console.log(offer_course_id);
+
+            $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        }
+                    });
+
+            $.ajax({
+                url: url+class_id,
+                type: 'post',
+                data:{
+                    class_id : class_id,
+                    action : action,
+                    offer_course_id : offer_course_id,
+                    "_token": "{{ csrf_token() }}"
+                    },
+                
+                success:function (data) {
+                    $('#Subject').html(data);
+                // console.log(data);
+                }
+
+            });
+        }
+    }
+    
+
+    $('#Class_Edit').change(function(){
+        if($(this).val() != '')
+        {
+            dynamicly_subject_select();
+        }
+    });
+    //dynamicly subject select
         
         //phone number validation   
         $('#phone').blur(function(){

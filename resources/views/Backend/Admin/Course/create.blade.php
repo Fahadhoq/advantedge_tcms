@@ -56,7 +56,7 @@
                                                <div class="form-group "> 
                                                     <label >Class</label>
                                                     <div >
-                                                        <select class="form-control" name="Class" id="Class" value="{{ old('Class') }}">
+                                                        <select class="form-control" name="Class" id="Class_Select" value="{{ old('Class') }}">
                                                            <option value="">Choose One Class</option>
                                                                 @foreach($Classes as $Classe)
                                                                     <option  id="{{$Classe->id}}" value="{{$Classe->id}}">{{$Classe->name}}</option>
@@ -67,12 +67,10 @@
 
                                                <div class="form-group"> 
                                                     <label >Subject</label>
-                                                    <div >
+                                                    <div>
                                                         <select class="form-control" name="Subject" id="Subject" value="{{ old('Subject') }}">
                                                            <option value="">Choose One Subject</option>
-                                                                @foreach($Subjects as $Subject)
-                                                                    <option  id="{{$Subject->id}}" value="{{$Subject->id}}">{{$Subject->name}}</option>
-                                                                @endforeach
+                                                               
                                                         </select>
                                                     </div>
                                                </div>
@@ -214,6 +212,42 @@
 @section('script')
 <script>
 $(document).ready(function(){
+
+    //dynamicly subject select
+    $('#Class_Select').change(function(){
+    
+    if($(this).val() != '')
+    {
+        var action = $(this).attr("id");
+        var class_id = $(this).val();
+        var url = '/dynamic-subject-select-';
+        var csrf_token = $('input[name=_token]').val();
+        console.log(action);
+
+        $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                    }
+                });
+
+        $.ajax({
+            url: url+class_id,
+            type: 'post',
+            data:{
+                  class_id : class_id,
+                  action : action,
+                  "_token": "{{ csrf_token() }}"
+                 },
+            
+            success:function (data) {
+                $('#Subject').html(data);
+             }
+
+        });
+    }
+
+    });
+    //dynamicly subject select
         
         //phone number validation   
         $('#phone').blur(function(){

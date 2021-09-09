@@ -50,9 +50,23 @@
                              <div class="col-xl-6">
                                 <form action="{{ route( 'subject.create' ) }}" method="post" >
                                 @csrf
+                                    <div class="form-group "> 
+                                        <label >Class</label>
+                                            <div >
+                                                <select class="form-control" name="Class" id="Class" value="{{ old('Class') }}">
+                                                    <option value="">Choose one class </option>
+                                                    @foreach($Classes as $Class)
+                                                     <option  id="{{$Class->id}}" value="{{$Class->id}}">{{$Class->name}}</option>
+                                                    @endforeach          
+                                                </select>
+                                            </div>
+                                    </div>        
+
                                     <div class="form-group">
                                         <lable style=font-weight:bold>Subject Name </lable>
-                                        <input type="text" class="form-control" name="SubjectName" value="{{ old('SubjectName') }}" placeholder="Enter Subject name" >
+                                        
+                                          <input type="text" class="form-control mt-2" name="SubjectName" value="{{ old('SubjectName') }}" placeholder="Enter Subject name" >
+                                        
                                     </div>
                    
                                     <div style=text-align:center class="col-xl-12">
