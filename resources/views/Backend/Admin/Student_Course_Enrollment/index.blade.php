@@ -2,6 +2,15 @@
 
 @section('css')
 <!-- datatable css link add -->
+        <style>
+            #filter_by_dropdown{
+                margin-left : 520px; 
+                pointer-events: all;
+                position: absolute;
+                z-index : 1;
+            }
+        
+        </style>
         @include('layouts.partials.datatable-css')
 @endsection
 
@@ -48,14 +57,26 @@
                             <div class="card m-b-30">
                                 
                                 <div class="card-body">
-                                  
-                                    
+                                        
+                                        <!-- filter by dropdown -->
+                                                <div class="form-group col-3" id="filter_by_dropdown">  
+                                                    <div >
+                                                        <select class="form-control" name="" id="select_filter_by_dropdown">
+                                                           <option value="0">Filter By </option>
+                                                           <option value="1">All Enrollment courses </option>
+                                                           <option value="2">Individual User </option>    
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                        <!-- filter by dropdown end-->        
+                                
                                     <!-- message show -->
                                     @include('layouts.partials.message-show')
                                     <!-- message show end -->
+                                    
 
-                                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
-                                                <thead class="thead-default">
+                                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">           
+                                                <thead class="thead-default all_enrollment_course_show">
                                                     <tr>
                                                         <th style=text-align:center> SL</th>
                                                         <th style=text-align:center> ID</th>
@@ -69,8 +90,8 @@
                                                     </tr>
                                                 </thead>
         
-        
-                                                <tbody>
+                                          <!-- all_enrollment_course_show div -->
+                                                <tbody class="all_enrollment_course_show">
                                                 @php $i=1 @endphp
                                                 @foreach($StudentsEnrollmentCourses as $StudentEnrollmentCourse)
                                                     <tr>
@@ -116,7 +137,28 @@
                                                     </tr>
                                                 @endforeach    
                                                 </tbody>
-                                    </table>
+                                                <!-- all_enrollment_course_show div end -->
+
+
+                                               <!-- Individual_user_enrollment_courses_show div -->
+                                               <thead class="thead-default individual_user_enrollment_courses_thead">
+                                                    <tr>
+                                                        <th style=text-align:center> SL</th>
+                                                        <th style=text-align:center> Student ID</th>
+                                                        <th style=text-align:center> Student Name</th>
+                                                        <th style=text-align:center> Total Enrolled Courses </th>   
+                                                        <th style=text-align:center> Action</th>  
+                                                    </tr>
+                                                </thead>
+
+                                                <tbody class="individual_user_enrollment_courses_show">
+                                                 
+                                                </tbody>
+                                                <!-- Individual_user_enrollment_courses_show div end -->
+
+
+                                        </table>
+                                    
 
                                 </div>
 
@@ -171,13 +213,52 @@
 @section('script')
 <script>
 
-$(document).ready(function(){  
+$(document).ready(function(){
+    
+    $('.individual_user_enrollment_courses_thead').hide(); 
+
+  
+    //filter
+    $(document).on('click', '#select_filter_by_dropdown', function(){ 
+        var filter_type = $(this).val();
+
+        if(filter_type == 1){
+            location.reload();
+
+        } else if(filter_type == 2){
+            var url = '/student-enrolled-course-index-filter-';
+            var csrf_token = $('input[name=_token]').val();  
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                }
+            });
+
+            $.ajax({  
+                    url: url + filter_type,  
+                    type: 'post',  
+                    data: {
+                        filter_type : filter_type,
+                        "_token": "{{ csrf_token() }}"
+                        },  
+                    success:function(data){  
+                            $('.all_enrollment_course_show').hide();
+
+                            $('.individual_user_enrollment_courses_show').html(data);
+                            $('.individual_user_enrollment_courses_show').show();
+                            $('.individual_user_enrollment_courses_thead').show();      
+                    }  
+            });
+        }
+
+    });
+    //filter
      
   //view class
     $(document).on('click', '.view_course', function(){
            var csrf_token = $('input[name=_token]').val();  
            var course_id = $(this).attr("id"); 
-           console.log(course_id);
            var url = '/course-show-'; 
 
             $.ajaxSetup({
@@ -261,6 +342,7 @@ $('#datatable-buttons').delegate('.enrolled_course_status_change', 'click', func
     $('#datatable-buttons').delegate('.enrolled_course_drop', 'click', function(){
     
         var csrf_token = $('input[name=_token]').val();
+        var action = "individual_course_drop";
         var current_tr = $(this).closest('tr');
         var url = '/student-enrolled-course-drop-';
         var enrolled_course_id = $(this).attr("data-id");
@@ -281,6 +363,7 @@ $('#datatable-buttons').delegate('.enrolled_course_status_change', 'click', func
                         type: 'post',
                         data: {
                                  enrolled_course_id: enrolled_course_id,
+                                 action : action,
                                 "_token": "{{ csrf_token() }}"
                                 },
                                 

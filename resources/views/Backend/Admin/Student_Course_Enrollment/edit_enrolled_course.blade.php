@@ -32,9 +32,21 @@ th {
     background-color: #b2cdf7;
     color:black;
 }
+
 .course_table_head_tr{
   background-color: #f0f4f7;
   color:black;
+}
+
+.table_lable{
+    text-align:center;
+    line-height:150%;
+    font-size: 20px;
+}
+.course_table_lable{
+    line-height:150%;
+    font-size: 20px;
+    margin-left: -15px;
 }
 
 </style>
@@ -91,42 +103,101 @@ th {
                            <div class="row">
 
                            <!-- 1st part              -->
-                                <div class="col-lg-6">
+                                <div class="col-lg-3">
                                     <div class="p-20">
-                                       
-                                            <div class="form-group">
-                                                <label>Search A Student </label>
-                                                <div>
-                                                    <input type="text" id="SearchStudent" name="SearchStudent"
-                                                           class="form-control" 
-                                                           placeholder="Enter Student Email Address Or ID"/>    
-                                                </div>
-                                            </div>
+                                  
+                                    <div class="col-sm-12 col-lg-12 table_lable">
+                                         <label class="page-title">Student Info </label> 
+                                    </div>
+                               
+                                      <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                        
+                                                <tr>
+                                                    <th class="course_table_head_tr">ID</th>
+                                                    <td id="student_id" value="{{$student->id}}" align= "center">{{$student->id}}</td>    
+                                                </tr>
+                                                <tr>
+                                                    <th class="course_table_head_tr">Image</th>
+                                                    <td align= "center"> <a href="#"> <img src='storage/'{{$student->profile_photo_path}} width="100px" height="80px"></a> </td>   
+                                                </tr>
+                                                <tr>
+                                                    <th class="course_table_head_tr">Name</th>
+                                                    <td align= "center">{{$student->name}}</td>   
+                                                </tr>
+                                                <tr>
+                                                    <th class="course_table_head_tr">Phone Number</th>
+                                                    <td align= "center">{{$student->phone}}</td>  
+                                                </tr>
+                                                <tr>
+                                                    <th class="course_table_head_tr">Email</th>
+                                                    <td align= "center">{{$student->email}}</td> 
+                                                </tr>
+                                               
+                                        </table>
+                                      </div>  
+                                    
 
-                                            <ul class="list-group">
+                                   </br></br>
 
-                                            </ul>
+                                    <div class="col-sm-12 col-lg-12 table_lable">
+                                         <label class="page-title">Student Academic Info </label> 
+                                    </div>
 
-                                            <div id="localSearchSimple"></div>
-
-                                            <div id="detail" style="margin-top:16px;"></div>
+                                     <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                        
+                                                <tr>
+                                                    <th class="course_table_head_tr">Academic Type</th>
+                                                    <td  align= "center">
+                                                       @if(@$student_academic_info->user_academic_type == 1)
+                                                            School
+                                                       @elseif(@$student_academic_info->user_academic_type == 2)
+                                                            Collage
+                                                       @elseif(@$student_academic_info->user_academic_type == 3)
+                                                            University
+                                                       @elseif(@$student_academic_info->user_academic_type == 4)
+                                                             Other
+                                                       @endif
+                                                       
+                                                    </td>    
+                                                </tr>
+                                                <tr>
+                                                    <th class="course_table_head_tr">Class</th>
+                                                    @php $student_academic_Type = App\Models\Classes::select('name')->where('id' , @$student_academic_info->user_class)->first(); @endphp
+                                                    <td align= "center">{{@$student_academic_Type->name}}</td>   
+                                                </tr>
+                                                <tr>
+                                                    <th class="course_table_head_tr">Institute Name</th>
+                                                    <td align= "center">{{@$student_academic_info->user_institute_name}}</td>  
+                                                </tr>
+                                               
+                                        </table>
+                                     </div>
+                                     
 
                                     </div>
-                                    <!-- col-lg-6 -->
+                                    <!-- p-20    -->
                                         </div>
-                                        <!-- p-20    -->
+                                        <!-- col-lg-6 -->
+                                        
                                     <!-- 1st part end     -->
                                    
 
                                     <!-- 2nd part              -->
-                                        <div class="col-lg-6">
+                                        <div class="col-lg-9">
                                                 <div class="p-20">
-                                                       <label>Course List </label>
+                                         
+                                                <div class="col-sm-12 col-lg-12 course_table_lable">
+                                                    <label class="page-title">Course List</label> 
+                                                </div>
+                                                    
 
                                                 <div class="table-responsive">
                                                     <table class="table table-bordered ">
                                                       <thead>
                                                             <tr class="course_table_head_tr">
+                                                                    
                                                                 <th>Select</th>
                                                                 <th>ID</th>
                                                                 <th>Class</th>
@@ -142,11 +213,14 @@ th {
                                                       </thead>   
                                                        
                                                         @foreach($offer_courses as $offer_course)
-                                                      
-                                                            <tr>
+                                                            
+                                                            <tr @foreach($student_enrolled_courses as $student_enrolled_course) @if($offer_course->id == $student_enrolled_course->course_id) class="selectRow" @endif @endforeach>
+                                                          
+                                                                
                                                                 <td align= "center">
-                                                                    <input type="checkbox" id="{{$offer_course->id}}" class="select_course" value="{{ $offer_course->id }}" />
+                                                                    <input type="checkbox" name="course_checkbox" id="{{$offer_course->id}}" class="select_course" value="{{ $offer_course->id }}" @foreach($student_enrolled_courses as $student_enrolled_course) @if($offer_course->id == $student_enrolled_course->course_id) checked @endif @endforeach />
                                                                 </td>
+                                      
                                                                 <td class="course_id" align= "center">{{ $offer_course->id }}</td>
                                                                 <!-- class -->
                                                                 <td align= "center">@php 
@@ -192,7 +266,7 @@ th {
                                                                 <td align= "center">{{ date('d/m/y', strtotime($offer_course->enrollment_last_date)) }}</td>
                                                                 
                                                             </tr>
-                                                       
+
                                                         @endforeach
 
                                                     </table>
@@ -251,95 +325,90 @@ th {
 @section('script')
 <script>
 $(document).ready(function(){
-           
-//Search Student by email or id
-$('#SearchStudent').keyup(function(){
-   
-    var url = '/student-course-enrollment-student-search-';
-    var SearchStudent = $("#SearchStudent").val();
-    var csrf_token = $('input[name=_token]').val();
 
-    $('#detail').html('');
-    $('.list-group').css('display', 'block');
+//selected courses
+    var selected_courses = [];
+    $('input[name="course_checkbox"]:checked').each(function() {
+        selected_courses.push($(this).val());
+    });
+    console.log(selected_courses);
+//selected courses end
 
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                    }
-        });
+//drop offer course
+$('.select_course').click(function(){
+ 
+      var checked_course =  $(this).val();
+     
+      jQuery.each(selected_courses, function(i, selected_course){
+          
+	   if(checked_course == selected_course){
+            
+            var student_id =  $("#student_id").text();
+            var action = "user_wise_course_drop"; 
+            var csrf_token = $('input[name=_token]').val();
+            var url = '/student-enrolled-course-drop-'; 
+            
+            if(checked_course != null){
 
-        $.ajax({
-                    url: url+SearchStudent,
-                    type: 'post',
-                    data:{
-                        SearchStudent : SearchStudent,
-                        "_token": "{{ csrf_token() }}"
+                $.confirm({
+                    title: 'Confirm!!!',
+                    content: 'Are you sure you want to drop this course?',
+                    buttons: {
+                        confirm: function () {
+                           
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                                    }
+                            });
+
+                            $.ajax({
+                                    url: url + checked_course,
+                                    type: 'post',
+                                    data:{
+                                            course_id : checked_course,
+                                            student_id : student_id,
+                                            action : action,
+                                                "_token": "{{ csrf_token() }}"
+                                        },
+                                                
+                                            success : function(data)
+                                            {
+                                                if(data.success) {
+                                                    $.growl.notice({message: data.success});
+                                                    $('#'+checked_course).closest('tr').removeClass('selectRow');
+                                                    $('#'+checked_course).prop('checked', false);
+                                                    
+                                                    selected_courses.splice($.inArray(data.course_id, selected_courses),1);
+                                                    
+                                                }
+                                            
+                                            }                
+                            });
+                            return true;
+
                         },
-                    
-                        success:function(data)
-                        {
-                            $('.list-group').html(data);
-                        }
-                });
-
-     if(SearchStudent.length == 0){
-        $('.list-group').css('display', 'none');
-    }
-   
-});
-//Search Student by email or id end
-
-
-$('#localSearchSimple').jsLocalSearch({
-  action:"Show",
-  html_search:true,
-  mark_text:"marktext"
-});
-
-//student detials show
- $(document).on('click', '.gsearch', function(){
-
-  var url = '/student-course-enrollment-student-detials-show-';   
-  var SearchStudent = $(this).text();
- // console.log(SearchStudent);
-  $('#SearchStudent').val(SearchStudent);
-  var csrf_token = $('input[name=_token]').val();
-  $('.list-group').css('display', 'none');
-
-  $.ajaxSetup({
-            headers: {
-                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                            cancel: function () {
+                                $('#'+checked_course).closest('tr').addClass('selectRow');
+                                $('#'+checked_course).prop('checked', true);
+                               
+                                console.log("cancle"+selected_courses);
+                            }
                     }
-        });
 
-  $.ajax({
-        url: url+SearchStudent,
-        type: 'post',
-        data:{
-            SearchStudent : SearchStudent,
-                "_token": "{{ csrf_token() }}"
-             },
-                    
-                success:function(data)
-                {
-                    $('#detail').html(data);
-                    $('#student_id').val(data.id);
-                }
-   });
+                 });
+              
+            }
 
-  
+       }		  
+	});
+ 
 });
-
-$(document).on('click', '.gsearch_non', function(){ 
-    $('.list-group').css('display', 'none');
-    $('#detail').html('');
-    $('#SearchStudent').val('');
-});
-//student detials show end
+//drop offer course end             
 
 //select offer course
 $('.select_course').click(function(){
-    var value = $(this).val(); 
+   
         if($(this).is(':checked'))
         {
             $(this).closest('tr').addClass('selectRow');
@@ -349,12 +418,12 @@ $('.select_course').click(function(){
             $(this).closest('tr').removeClass('selectRow');
         }
 });
-//select offer course end  
+//select offer course end 
 
 //check selected student is enrolled in selected course
 $('.select_course').click(function(){
-        if($(this).is(':checked')){
-
+        if($(this).is(':checked'))
+        {
             var select_course_id =  $(this).val();
             var select_student_id =  $("#student_id").text();
             var csrf_token = $('input[name=_token]').val();
@@ -384,32 +453,32 @@ $('.select_course').click(function(){
                                           $.growl.error({message: data.error});
                                           $('#'+select_course_id).closest('tr').removeClass('selectRow');
                                           $('#'+select_course_id).prop('checked', false);
-                                          frontend_select_course_checkbox_value.splice($.inArray(select_course_id, frontend_select_course_checkbox_value),1);
-                                          console.log("is enrolled"+frontend_select_course_checkbox_value);
-
+                                          selected_courses.splice($.inArray(select_course_id, selected_courses),1);
+                                           console.log("is enrolled"+selected_courses);   
                                     }else if (data.success){
                                         check_sit_limit(select_course_id);
-                                        console.log("!is enrolled"+frontend_select_course_checkbox_value);
+                                        console.log("!is enrolled"+selected_courses);
                                     }
-                                  // console.log(data);
+                                  
                                 }                
                 });
 
             }else{
                         $.growl.error({message: "first select a student"});
                         $('.select_course').closest('tr').removeClass('selectRow');
-                         $('.select_course').prop('checked', false);
+                        $('.select_course').prop('checked', false);
             }
            
         }
 });
-//check selected student is enrolled in selected course end 
+//check selected student is enrolled in selected course end
+
 
 //check sit limit is full or not
 function check_sit_limit(course_id) {
 
-        if($('#'+course_id).is(':checked')){
-
+        if($('#'+course_id).is(':checked'))
+        {
             var course_id =  $('#'+course_id).val();
             var csrf_token = $('input[name=_token]').val();
             var url = '/student-course-enrollment-check-sit-limit-'; 
@@ -436,11 +505,11 @@ function check_sit_limit(course_id) {
                                           $.growl.error({message: data.error});
                                            $('#'+course_id).closest('tr').removeClass('selectRow');
                                            $('#'+course_id).prop('checked', false);
-                                           frontend_select_course_checkbox_value.splice($.inArray(course_id, frontend_select_course_checkbox_value),1);
-                                           console.log("is sit full"+frontend_select_course_checkbox_value);   
+                                           selected_courses.splice($.inArray(course_id, selected_courses),1);
+                                           console.log("is sit full"+selected_courses);
                                     } else if (data.success){
                                         backend_check_selected_course_is_clash_day_time(course_id);
-                                        console.log("!is sit full"+frontend_select_course_checkbox_value);
+                                        console.log("!is sit full"+selected_courses);
                                     }
                                    
                                 }                
@@ -451,20 +520,21 @@ function check_sit_limit(course_id) {
         }
 }
 //check sit limit is full or not end  
-
+ 
 
 //check selected course is clash (day,time) for student
 
 //backend selected coures with db 
 function backend_check_selected_course_is_clash_day_time(course_id) {
     
-        if($('#'+course_id).is(':checked')){
-            
+      if($('#'+course_id).is(':checked')){
+
             var select_course_id =  $('#'+course_id).val();
             var select_student_id =  $("#student_id").text();
             var csrf_token = $('input[name=_token]').val();
-            var url = '/student-course-enrollment-check-student-course-is-clash-';
-           
+            var url = '/student-course-enrollment-check-student-course-is-clash-'; 
+           // console.log(select_course_id);
+        
               
                 $.ajaxSetup({
                 headers: {
@@ -487,19 +557,19 @@ function backend_check_selected_course_is_clash_day_time(course_id) {
                                           $.growl.error({message: data.error});
                                            $('#'+select_course_id).closest('tr').removeClass('selectRow');
                                            $('#'+select_course_id).prop('checked', false);
-                                           frontend_select_course_checkbox_value.splice($.inArray(select_course_id, frontend_select_course_checkbox_value),1);
-                                           console.log("is backend"+frontend_select_course_checkbox_value);
+                                           selected_courses.splice($.inArray(select_course_id, selected_courses),1);
+                                           console.log("is backend"+selected_courses);
                                     }
-                                    console.log("!is backend"+frontend_select_course_checkbox_value);
+                                    console.log("!is backend"+selected_courses);
                                 }                
                 });
-    
+           
         }
 }
-//backend selected coures with db end
+//backend selected coures with db
 
 //forntend selected course
-var frontend_select_course_checkbox_value = [];
+// var frontend_select_course_checkbox_value = [];
 $('.select_course').click(function(){
     
     var select_student_id =  $("#student_id").text();
@@ -508,13 +578,14 @@ $('.select_course').click(function(){
     
     if ($(this).is(':checked')) {
         var forntend_select_course_id = ($(this).val());
-        frontend_select_course_checkbox_value.push(forntend_select_course_id);
+        selected_courses.push(forntend_select_course_id);
         var uncheck_request = 0;
-    } else {
-        var uncheck_course_id = ($(this).val());
-        frontend_select_course_checkbox_value.splice($.inArray(uncheck_course_id, frontend_select_course_checkbox_value),1); console.log("forntend uncheck"+frontend_select_course_checkbox_value);
-        uncheck_request = 1;
     }
+    //  else {
+    //     var uncheck_course_id = ($(this).val()); 
+    //     frontend_select_course_checkbox_value.splice($.inArray(uncheck_course_id, frontend_select_course_checkbox_value),1);
+    //     uncheck_request = 1; 
+    // }
 
         if(uncheck_request == 0){
                 $.ajaxSetup({
@@ -528,7 +599,7 @@ $('.select_course').click(function(){
                             type: 'post',
                             data:{
                                 student_id : select_student_id,
-                                frontend_select_course_checkbox_value : frontend_select_course_checkbox_value,
+                                frontend_select_course_checkbox_value : selected_courses,
                                     "_token": "{{ csrf_token() }}"
                                 },
                                         
@@ -538,27 +609,27 @@ $('.select_course').click(function(){
                                                 $.growl.error({message: data.error});
                                                 $('#'+forntend_select_course_id).closest('tr').removeClass('selectRow');
                                                 $('#'+forntend_select_course_id).prop('checked', false);
-                                                frontend_select_course_checkbox_value.splice($.inArray(forntend_select_course_id, frontend_select_course_checkbox_value),1);
-                                                console.log("forntend"+frontend_select_course_checkbox_value);
+                                                selected_courses.splice($.inArray(forntend_select_course_id, selected_courses),1);
+                                                console.log("is foentend"+selected_courses);
                                         }
-                                        console.log("!forntend"+frontend_select_course_checkbox_value);
+                                        console.log("!is foentend"+selected_courses);
                                         
                                     }                
                     });
             }
 
 });
-//forntend selected course end
+//forntend selected course end 
 
 //check selected course is clash (day,time) for student end 
 
-//offer course store
+//offer course update
 $("#StudentEnrolmentFormsubmit").click(function(){        
        // $("#myForm").submit(); // Submit the form
        var select_student =  $("#student_id").text();
        var select_course_checkbox = $('.select_course:checked');
        var csrf_token = $('input[name=_token]').val();
-       var url = '/student-course-enrollment-store'; 
+       var url = '/student-enrollment-course-update'; 
        //console.log(select_student);
 
         if(select_student.length != 0){
@@ -599,7 +670,8 @@ $("#StudentEnrolmentFormsubmit").click(function(){
                 });
             
             }else{
-                $.growl.error({message: "Select at least one course"});
+                $.growl.notice({message: "Coures Updated Successfull"});
+                window.location.href = "/students-enrolled-courses";
             }
 
         }else{
@@ -607,7 +679,7 @@ $("#StudentEnrolmentFormsubmit").click(function(){
         }
         
     });
-//offer course store end
+//offer course update end
 
 });    
           

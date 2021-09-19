@@ -1,9 +1,13 @@
-.dataTables_filter{
-    
+.dataTables_filter{  
     float: right;
 }
 .dataTables_length{
 	float: left;
 }
+
+.btn-group{
+    margin-left: 15px;
+}
+
 
 

@@ -72,8 +72,8 @@ Route::middleware(['auth:sanctum', 'verified'])->namespace('Admin')->group(funct
     Route::get('/user-show-{id}', [UserController::class, 'show'])->name('user.view');
     Route::post('/user-view-tooltip-{id}', [UserController::class, 'view']);
     Route::get('/user-edit-{id}', [UserController::class, 'edit'])->name('user.edit');
-    Route::post('/user-image-delete-{id}', [UserController::class, 'image_delete']);
     Route::post('/user-edit-{id}', [UserController::class, 'update']);
+    Route::post('/user-image-delete-{id}', [UserController::class, 'image_delete']);
     Route::get('/user-delete-{id}', [UserController::class, 'delete'])->name('user.delete');
     Route::post('/user-verify-{id}', [UserController::class, 'User_Verify']);
     Route::post('/user-phone-number-availability-{phone}', [UserController::class, 'phone_number_availability']);
@@ -124,9 +124,13 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/student-course-enrollment-check-sit-limit-{id}', [StudentCourseEnrollmentController::class, 'check_sit_limit']);
     Route::post('/student-course-enrollment-check-student-is-enrolled-{id}', [StudentCourseEnrollmentController::class, 'check_student_is_enrolled']);
     Route::post('/student-course-enrollment-check-student-course-is-clash-{id}', [StudentCourseEnrollmentController::class, 'check_student_courde_is_clash']);
+    Route::post('/student-course-enrollment-check-selected-courses-is-clash', [StudentCourseEnrollmentController::class, 'check_selected_courses_is_clash']);
     Route::post('/student-enrolled-course-status-change-{id}', [StudentCourseEnrollmentController::class, 'status_change']);
-    Route::post('/student-enrolled-course-drop-{id}', [StudentCourseEnrollmentController::class, 'drop_course']);
-    
+    Route::post('/student-enrolled-course-drop-{course_id}', [StudentCourseEnrollmentController::class, 'drop_course']);
+    Route::post('/student-enrolled-course-index-filter-{id}', [StudentCourseEnrollmentController::class, 'course_index_filter']);
+    Route::get('/student-enrolled-course-edit-{student_id}', [StudentCourseEnrollmentController::class, 'enrolled_course_edit']);
+    Route::post('/student-enrollment-course-update', [StudentCourseEnrollmentController::class, 'enroll_course_update']);
+       
 });
 
 
