@@ -769,24 +769,36 @@ class StudentCourseEnrollmentController extends Controller
                                                                 ->where('course_id' , $request->course_id)
                                                                 ->first();
                                                                 
+            $today_date = Carbon::now()->format('Y-m-d');
+            $offer_courses = Course::where('id' , $request->course_id)->first();
+           
+            if($offer_courses->enrollment_last_date >= $today_date){
 
-            if($student_enrolled_course != null){
-                $student_enrolled_course->delete();
-                return response()->json(
-                    [ 
-                       'success' => 'Course drop Successfull',
-                       'course_id' => $request->course_id,
-                    ]
-                );
+                if($student_enrolled_course != null){
+                    $student_enrolled_course->delete();
+                    return response()->json(
+                        [ 
+                           'success' => 'Course drop Successfull',
+                           'course_id' => $request->course_id,
+                        ]
+                    );
+                }else{
+                    return response()->json(
+                        [ 
+                           'success' => 'Course unselected Successfull',
+                           'course_id' => $request->course_id,
+                        ]
+                    );
+    
+                }
             }else{
                 return response()->json(
                     [ 
-                       'success' => 'Course unselected Successfull',
-                       'course_id' => $request->course_id,
+                       'error' => 'You are not parmit to drop this course',
                     ]
                 );
-
             }
+            
 
         }elseif($request->action == "individual_course_drop"){
             $student_enrolled_course = Student_Course_Enrollment::find($request->enrolled_course_id); 
@@ -845,18 +857,46 @@ class StudentCourseEnrollmentController extends Controller
 
      public function enrolled_course_edit($student_id){
 
-        $data['student'] = User::where('id', $student_id)->first();
-        $data['student_academic_info'] = User_Academic_Info::select('user_academic_type','user_class','user_institute_name')
+        $student = User::where('id', $student_id)->first();
+        $student_academic_info = User_Academic_Info::select('user_academic_type','user_class','user_institute_name')
                                                                ->where('user_id', $student_id)
                                                                ->first();
-        
-        $today_date = Carbon::now()->format('Y-m-d');
-        $data['offer_courses'] = Course::where('enrollment_last_date', '>=' , $today_date)->where('status' , 1)->get();
 
-        $data['student_enrolled_courses'] = Student_Course_Enrollment::select('course_id')->where('user_id' , $student_id)->get();
+        $student_enrolled_courses = Student_Course_Enrollment::select('course_id')->where('user_id' , $student_id)->get();
+
+        // $Students_Enrollment_Courses_array = array();
+        // foreach ($student_enrolled_courses as $student_enrolled_course) {
+        //     array_push($Students_Enrollment_Courses_array , $student_enrolled_course->course_id);
+        // } 
+
+        $today_date = Carbon::now()->format('Y-m-d');
+        $offer_courses = Course::where('enrollment_last_date', '>=' , $today_date)->where('status' , 1)->get();
+
+        $enrollment_last_date_offer_courses_array = array();
+        foreach ($offer_courses as $offer_course) {
+            array_push($enrollment_last_date_offer_courses_array , $offer_course->id);
+        }
+       
+        foreach ($student_enrolled_courses as $student_enrolled_course){
+            if(!in_array($student_enrolled_course->course_id, $enrollment_last_date_offer_courses_array)){
+                array_push($enrollment_last_date_offer_courses_array , $student_enrolled_course->course_id);
+            }
+        }
+
+        $offer_courses_array = array();
+
+        foreach ($enrollment_last_date_offer_courses_array as $enrollment_last_date_offer_course_array) {
+            $offer_courses = Course::where('id' , $enrollment_last_date_offer_course_array)->first();
+            array_push($offer_courses_array , $offer_courses->id);
+        }
+       // dd();
+    //  print_r($offer_courses_array);dd();
+
       
-        
-        return view('Backend.Admin.Student_Course_Enrollment.edit_enrolled_course' , $data);
+        return view('Backend.Admin.Student_Course_Enrollment.edit_enrolled_course')->with('student_enrolled_courses', $student_enrolled_courses)
+                                                                                   ->with('offer_courses', $offer_courses_array)
+                                                                                   ->with('student', $student)
+                                                                                   ->with('student_academic_info', $student_academic_info);
        
      }
 

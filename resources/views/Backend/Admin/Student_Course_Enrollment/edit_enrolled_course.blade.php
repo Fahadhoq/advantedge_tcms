@@ -212,7 +212,10 @@ th {
                                                             </tr>
                                                       </thead>   
                                                        
-                                                        @foreach($offer_courses as $offer_course)
+                                                        @foreach($offer_courses as $offer_course_id)
+                                                                        @php 
+                                                                                $offer_course = App\Models\Course::where('id' , $offer_course_id)->first();
+                                                                        @endphp
                                                             
                                                             <tr @foreach($student_enrolled_courses as $student_enrolled_course) @if($offer_course->id == $student_enrolled_course->course_id) class="selectRow" @endif @endforeach>
                                                           
@@ -223,10 +226,11 @@ th {
                                       
                                                                 <td class="course_id" align= "center">{{ $offer_course->id }}</td>
                                                                 <!-- class -->
-                                                                <td align= "center">@php 
+                                                                <td align= "center"> @php 
                                                                                       $class = App\Models\Classes::select('name')->where('id' , $offer_course->class)->first();
                                                                                          echo $class->name;
-                                                                                      @endphp</td>
+                                                                                      @endphp
+                                                                </td>
                                                                 <!-- class end -->
                                                                 <!-- subject name -->
                                                                 <td align= "center"> @php 
@@ -266,7 +270,7 @@ th {
                                                                 <td align= "center">{{ date('d/m/y', strtotime($offer_course->enrollment_last_date)) }}</td>
                                                                 
                                                             </tr>
-
+                                                          
                                                         @endforeach
 
                                                     </table>
@@ -381,7 +385,12 @@ $('.select_course').click(function(){
                                                     
                                                     selected_courses.splice($.inArray(data.course_id, selected_courses),1);
                                                     
-                                                }
+                                                } else if(data.error){
+                                                    $.growl.error({message: data.error});
+                                                    $('#'+checked_course).closest('tr').addClass('selectRow');
+                                                    $('#'+checked_course).prop('checked', true);
+                                                    
+                                                } 
                                             
                                             }                
                             });
