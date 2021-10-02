@@ -103,8 +103,8 @@
                                 <li>
                                     <a href="javascript:void(0);">Teacher Course Enrollment <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
                                     <ul class="submenu">
-                                        <li><a href="javascript:void(0);">enroll course</a></li>
-                                        <li><a href="javascript:void(0);">all enrolled courses</a></li>
+                                        <li><a href="{{ route('TeacherCourseEnrollment.enroll') }}">enroll course</a></li>
+                                        <li><a href="{{ route('TeacherCourseEnrollment.index') }}">all enrolled courses</a></li>
                                     </ul>
                                 </li>
                             </ul>

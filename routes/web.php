@@ -10,6 +10,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\StudentCourseEnrollmentController;
+use App\Http\Controllers\Admin\TeacherCourseEnrollmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +131,22 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::post('/student-enrolled-course-index-filter-{id}', [StudentCourseEnrollmentController::class, 'course_index_filter']);
     Route::get('/student-enrolled-course-edit-{student_id}', [StudentCourseEnrollmentController::class, 'enrolled_course_edit']);
     Route::post('/student-enrollment-course-update', [StudentCourseEnrollmentController::class, 'enroll_course_update']);
+       
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/teachers-enrolled-courses', [TeacherCourseEnrollmentController::class, 'index'])->name('TeacherCourseEnrollment.index');
+    Route::get('/teacher-course-enroll', [TeacherCourseEnrollmentController::class, 'enroll'])->name('TeacherCourseEnrollment.enroll');
+    Route::post('/teacher-course-enrollment-teacher-search-{text}', [TeacherCourseEnrollmentController::class, 'teacher_search'])->name('TeacherCourseEnrollment.teacher_search');
+    Route::post('/teacher-course-enrollment-teacher-detials-show-{text}', [TeacherCourseEnrollmentController::class, 'teacher_detials_show']);
+    Route::post('/teacher-course-enrollment-store', [TeacherCourseEnrollmentController::class, 'enroll_store']);
+    Route::post('/teacher-course-enrollment-check-teacher-course-is-clash-{id}', [TeacherCourseEnrollmentController::class, 'check_teacher_courde_is_clash']);
+    Route::post('/teacher-course-enrollment-check-selected-courses-is-clash', [TeacherCourseEnrollmentController::class, 'check_selected_courses_is_clash']);
+    Route::post('/teacher-enrolled-course-status-change-{id}', [TeacherCourseEnrollmentController::class, 'status_change']);
+    Route::post('/teacher-enrolled-course-drop-{course_id}', [TeacherCourseEnrollmentController::class, 'drop_course']);
+    Route::post('/teacher-enrolled-course-index-filter-{id}', [TeacherCourseEnrollmentController::class, 'course_index_filter']);
+    Route::get('/teacher-enrolled-course-edit-{teacher_id}', [TeacherCourseEnrollmentController::class, 'enrolled_course_edit']);
+    Route::post('/teacher-enrollment-course-update', [TeacherCourseEnrollmentController::class, 'enroll_course_update']);
        
 });
 
