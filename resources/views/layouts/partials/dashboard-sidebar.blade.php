@@ -90,7 +90,7 @@
 
                         <!-- Student Course Enrollment start -->
                         <li>
-                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-pencil-ruler"></i> <span> Student Enrollment <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span> </a>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-pencil-ruler"></i> <span> STUDENT ENROLLMENT <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span> </a>
                             <ul class="submenu">
                                         <li><a href="{{ route('StudentCourseEnrollment.enroll') }}">enroll</a></li>
                                         <li><a href="{{ route('StudentCourseEnrollment.index') }}">all enrolled courses</a></li>    
@@ -98,17 +98,17 @@
                         </li>
                         <!-- Student Course Enrollment end -->
 
-                        <!-- Assign Teacher  Course Enrollment start -->
+                        <!-- Assign Teacher in Course  start -->
                         <li>
-                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-pencil-ruler"></i> <span> Assign Teacher <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span> </a>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-pencil-ruler"></i> <span> ASSING TEACHER <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span> </a>
                             <ul class="submenu">
                                         <li><a href="{{ route('TeacherCourseEnrollment.enroll') }}">assign</a></li>
                                         <li><a href="{{ route('TeacherCourseEnrollment.index') }}">all assigned teachers</a></li>    
                             </ul>
                         </li>
-                        <!-- Assign Teacher  Course Enrollment end -->
+                        <!-- Assign Teacher in Course end -->
 
-                        <!-- Teacher Course Enrollment start -->
+                        <!-- Enrollment start -->
                         <!-- <li>
                             <a href="javascript:void(0);" class="waves-effect"><i class="icon-share"></i><span> COURSE ENROLLMENT <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
                             <ul class="submenu">
@@ -130,6 +130,22 @@
                             </ul>
                         </li> -->
                         <!-- Enrollment end -->
+
+                        <!-- payment start -->
+                        <li>
+                            <a href="javascript:void(0);" class="waves-effect"><i class="icon-share"></i><span> PAYMENT <span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span> </span></a>
+                            <ul class="submenu">
+                                <li>
+                                    <a href="javascript:void(0);">Student Payment<span class="float-right menu-arrow"><i class="mdi mdi-chevron-right"></i></span></a>
+                                    <ul class="submenu">
+                                        <li><a href="{{ route('StudentPayment.pay') }}">pay</a></li>
+                                        <li><a href="{{ route('StudentsPayment.index') }}">show all students payment</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                        </li>
+                        <!-- payment end -->
 
                         
                         <li class="menu-title">Components</li>

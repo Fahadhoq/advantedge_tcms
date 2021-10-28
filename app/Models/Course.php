@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Classes;
+use App\Models\Subject;
 
 class Course extends Model
 {
@@ -23,6 +25,16 @@ class Course extends Model
         'enrollment_last_date',
         'status',
     ];
+
+    public function classss()
+    {
+        return $this->belongsTo(Classes::class ,'class');
+    }
+
+    public function subjectss()
+    {
+        return $this->belongsTo(Subject::class ,'subject');
+    }
 
 
 }

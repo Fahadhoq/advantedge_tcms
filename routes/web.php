@@ -11,7 +11,7 @@ use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\StudentCourseEnrollmentController;
 use App\Http\Controllers\Admin\TeacherCourseEnrollmentController;
-
+use App\Http\Controllers\Payment\StudentPaymentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -148,6 +148,16 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('/teacher-enrolled-course-edit-{teacher_id}', [TeacherCourseEnrollmentController::class, 'enrolled_course_edit']);
     Route::post('/teacher-enrollment-course-update', [TeacherCourseEnrollmentController::class, 'enroll_course_update']);
        
+});
+
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('/students-payment-list', [StudentPaymentController::class, 'index'])->name('StudentsPayment.index');
+    Route::get('/student-payment-pay', [StudentPaymentController::class, 'pay'])->name('StudentPayment.pay');
+    Route::post('/student-payment-student-course-detials-show-{text}', [StudentPaymentController::class, 'student_course_detials_show']);
+    Route::post('/student-payment-store', [StudentPaymentController::class, 'payment_store']);   
+    Route::get('/student-payment-view-{student_id}', [StudentPaymentController::class, 'student_payment_view'])->name('StudentPayment.view');
+    Route::get('/student-payment-{id}', [StudentPaymentController::class, 'edit'])->name('student_payment.edit');
+    Route::post('/student-payment-{id}', [StudentPaymentController::class, 'update']);    
 });
 
 
